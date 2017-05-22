@@ -1,0 +1,26 @@
+<#
+ # Comments in PowerShell are defined by using '#' sign
+ #author: David Farag
+ #version: 1.0
+ #synopsis: script that pulls computer object information
+ #requirenments: Powershell Version 5.1.14393.1066 available at link https://www.microsoft.com/en-us/download/details.aspx?id=54616
+#>
+
+#main variable and attributes
+$pcInfo = Get-ComputerInfo
+$pcInfo.WindowsProductId
+$pcInfo.WindowsProductName
+$pcInfo.WindowsInstallationType
+$pcInfo.WindowsEditionId
+$pcInfo.WindowsInstallDateFromRegistry
+$pcInfo.WindowsSystemRoot
+$env:COMPUTERNAME
+
+#ipadresses for all network adapters
+Get-NetIPAddress | Where-Object -FilterScript { $_.ValidLifetime -Lt ([TimeSpan]::FromDays(1)) } | Export-Csv c:\temp\ip_adapter_info.csv
+
+#get all local administrator accounts
+Get-LocalGroupMember -Group "Administrators" 
+
+#get all installed applications and the user that installed them
+Get-EventLog -LogName Application -InstanceId 11707 -Source MsiInstaller | Format-Table -Property Time,Source,InstanceID,Message,Username
